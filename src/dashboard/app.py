@@ -119,22 +119,18 @@ scatter = alt.Chart(df_filtrado).mark_circle(size=60).encode(
 st.altair_chart(scatter, use_container_width=True)
 
 # Melhor custo-benefício
-st.subheader("🥇 Melhor custo-benefício")
+st.subheader("🥇 Melhor custo-benefício (Revisado)")
 df_valid = df_filtrado[(df_filtrado['Preço Atual (R$)'] > 0) & (
-    df_filtrado['Nota de Avaliação'] > 0)]
-df_valid['Score'] = df_valid['Nota de Avaliação'] / \
-    df_valid['Preço Atual (R$)']
+    df_filtrado['Nota de Avaliação'] > 0) & (df_filtrado['Qtd. de Avaliações'] > 0)]
+
+# Fórmula revisada para considerar quantidade de avaliações
+df_valid['Score'] = (df_valid['Nota de Avaliação'] *
+                     df_valid['Qtd. de Avaliações']) / df_valid['Preço Atual (R$)']
+
+# Produto com o maior custo-benefício
 melhor = df_valid.sort_values(by='Score', ascending=False).iloc[0]
 
 st.success(f"🔝 {melhor['Marca']} - {melhor['Modelo']}")
 st.write(f"💸 Preço: R$ {melhor['Preço Atual (R$)']:.2f}".replace('.', ','))
 st.write(f"⭐ Avaliação: {melhor['Nota de Avaliação']}")
-
-# Dados brutos formatados
-if st.checkbox("📄 Mostrar dados brutos"):
-    df_exibicao = df_filtrado.copy()
-    df_exibicao['Preço Atual (R$)'] = df_exibicao['Preço Atual (R$)'].apply(
-        lambda x: f"R$ {x:,.2f}".replace('.', ','))
-    df_exibicao['Preço Antigo (R$)'] = df_exibicao['Preço Antigo (R$)'].apply(
-        lambda x: f"R$ {x:,.2f}".replace('.', ','))
-    st.dataframe(df_exibicao)
+st.write(f"📝 Quantidade de Avaliações: {melhor['Qtd. de Avaliações']}")
