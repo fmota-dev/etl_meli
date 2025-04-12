@@ -146,7 +146,7 @@ scatter = (
 st.altair_chart(scatter, use_container_width=True)
 
 # Melhor custo-benefício
-st.subheader("🥇 Melhor custo-benefício (Revisado)")
+st.subheader("🥇 Melhor custo-benefício")
 df_valid = df_filtrado[
     (df_filtrado["Preço Atual (R$)"] > 0)
     & (df_filtrado["Nota de Avaliação"] > 0)
